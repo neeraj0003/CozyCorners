@@ -21,37 +21,35 @@ const listingSchema = new Schema({
       ref: "Review",
     },
   ],
-  owner:
-  {
+
+  owner: {
     type: Schema.Types.ObjectId,
     ref: "User",
-  }
-  ,
+  },
+
   geometry: {
     type: {
       type: String, // Don't do `{ location: { type: String } }`
-      enum: ['Point'], // 'location.type' must be 'Point'
-      required: true
-    }
+      enum: ["Point"], // 'location.type' must be 'Point'
+      required: true,
+    },
+    coordinates: {
+      type: [Number],
+      required: true,
+    },
   },
-  coordinates: {
-    type: [Number],
-    required: true
-  },
-
-  category: {
-    type: String,
-    enum: ["mountains", "arctic", "deserts", "farms",]
-  }
-}
-);
+  // additional work
+  //   category: {
+  //     type: String,
+  //     enum: ["mountains", "arctic", "farms", "deserts"],
+  //   },
+});
 
 listingSchema.post("findOneAndDelete", async (listing) => {
   if (listing) {
     await Review.deleteMany({ _id: { $in: listing.reviews } });
   }
 });
-
 
 const Listing = mongoose.model("Listing", listingSchema);
 module.exports = Listing;
